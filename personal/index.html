@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FFF8F0;
+            --blush: #FFE5E5;
+            --rose: #FFB5C5;
+            --deep-rose: #E8899E;
+            --charcoal: #3A3A3A;
+            --gold: #D4AF37;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--blush) 100%);
+            color: var(--charcoal);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Floating hearts background animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .heart-bg {
+            position: fixed;
+            bottom: -50px;
+            font-size: 20px;
+            color: var(--rose);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+            animation: float linear infinite;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 700;
+            color: var(--deep-rose);
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-style: italic;
+            color: var(--charcoal);
+            opacity: 0.8;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 0.8; }
+        }
+
+        /* Photo Gallery Grid */
+        .gallery-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 40px 20px 100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 30px;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .photo-card {
+            position: relative;
+            cursor: pointer;
+            animation: scaleIn 0.6s ease-out both;
+        }
+
+        /* Dynamic grid layout - photos automatically adjust size based on position */
+        .photo-card:nth-child(6n+1) { grid-column: span 7; }
+        .photo-card:nth-child(6n+2) { grid-column: span 5; }
+        .photo-card:nth-child(6n+3) { grid-column: span 5; }
+        .photo-card:nth-child(6n+4) { grid-column: span 7; }
+        .photo-card:nth-child(6n+5) { grid-column: span 6; }
+        .photo-card:nth-child(6n+6) { grid-column: span 6; }
+
+        /* Stagger animations dynamically */
+        .photo-card:nth-child(1) { animation-delay: 0.1s; }
+        .photo-card:nth-child(2) { animation-delay: 0.2s; }
+        .photo-card:nth-child(3) { animation-delay: 0.3s; }
+        .photo-card:nth-child(4) { animation-delay: 0.4s; }
+        .photo-card:nth-child(5) { animation-delay: 0.5s; }
+        .photo-card:nth-child(6) { animation-delay: 0.6s; }
+        .photo-card:nth-child(n+7) { animation-delay: 0.7s; }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotate(-2deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        /* Alternating rotation for natural look */
+        .photo-card:nth-child(4n+1),
+        .photo-card:nth-child(4n+3) {
+            transform: rotate(-1.5deg);
+        }
+
+        .photo-card:nth-child(4n+2),
+        .photo-card:nth-child(4n+4) {
+            transform: rotate(1.5deg);
+        }
+
+        .photo-card:hover {
+            transform: rotate(0deg) translateY(-15px) scale(1.03) !important;
+            z-index: 10;
+        }
+
+        .photo-wrapper {
+            position: relative;
+            padding-bottom: 100%;
+            overflow: visible;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* FRAME STYLE 1: Polaroid (alternating pattern) */
+        .photo-card.frame-polaroid .photo-wrapper {
+            background: white;
+            padding: 15px;
+            padding-bottom: calc(100% + 60px);
+            box-shadow: 
+                0 4px 6px rgba(0,0,0,0.1),
+                0 10px 20px rgba(0,0,0,0.08),
+                0 0 0 1px rgba(0,0,0,0.05);
+        }
+
+        /* FRAME STYLE 2: Ornate (alternating pattern) */
+        .photo-card.frame-ornate .photo-wrapper {
+            background: linear-gradient(145deg, #f9f9f9, #ffffff);
+            padding: 20px;
+            padding-bottom: calc(100% + 40px);
+            box-shadow: 
+                inset 0 0 0 2px var(--gold),
+                inset 0 0 0 6px white,
+                inset 0 0 0 8px var(--rose),
+                0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 8px;
+        }
+
+        /* FRAME STYLE 3: Tape (alternating pattern) */
+        .photo-card.frame-tape .photo-wrapper {
+            background: white;
+            padding: 8px;
+            padding-bottom: calc(100% + 16px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        /* FRAME STYLE 4: Vintage (alternating pattern) */
+        .photo-card.frame-vintage .photo-wrapper {
+            background: linear-gradient(to bottom, #f5f0e8, #ebe4d8);
+            padding: 25px;
+            padding-bottom: calc(100% + 50px);
+            box-shadow: 
+                0 8px 20px rgba(0,0,0,0.15),
+                inset 0 0 0 1px rgba(139, 69, 19, 0.2);
+            border-radius: 4px;
+        }
+
+        /* Decorative elements for frames */
+        .photo-wrapper::before,
+        .photo-wrapper::after {
+            content: '';
+            position: absolute;
+            z-index: 10;
+        }
+
+        /* Tape decorations */
+        .photo-card.frame-tape .photo-wrapper::before {
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            width: 80px;
+            height: 30px;
+            background: rgba(255, 229, 180, 0.7);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 1px dashed rgba(0,0,0,0.1);
+            border-right: 1px dashed rgba(0,0,0,0.1);
+        }
+
+        .photo-card.frame-tape .photo-wrapper::after {
+            bottom: -15px;
+            right: 20px;
+            transform: rotate(5deg);
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 229, 180, 0.7);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 1px dashed rgba(0,0,0,0.1);
+            border-right: 1px dashed rgba(0,0,0,0.1);
+        }
+
+        /* Ornate corner decorations */
+        .photo-card.frame-ornate .photo-wrapper::before {
+            top: 8px;
+            left: 8px;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+            opacity: 0.3;
+        }
+
+        .photo-card.frame-ornate .photo-wrapper::after {
+            bottom: 8px;
+            right: 8px;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+            opacity: 0.3;
+        }
+
+        /* Vintage corner decorations */
+        .photo-card.frame-vintage .photo-wrapper::before {
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background: 
+                linear-gradient(45deg, transparent 45%, rgba(139, 69, 19, 0.15) 45%, rgba(139, 69, 19, 0.15) 55%, transparent 55%),
+                linear-gradient(-45deg, transparent 45%, rgba(139, 69, 19, 0.15) 45%, rgba(139, 69, 19, 0.15) 55%, transparent 55%);
+        }
+
+        .photo-card.frame-vintage .photo-wrapper::after {
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: 
+                linear-gradient(45deg, transparent 45%, rgba(139, 69, 19, 0.15) 45%, rgba(139, 69, 19, 0.15) 55%, transparent 55%),
+                linear-gradient(-45deg, transparent 45%, rgba(139, 69, 19, 0.15) 45%, rgba(139, 69, 19, 0.15) 55%, transparent 55%);
+        }
+
+        /* Image positioning for different frame types */
+        .photo-wrapper img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease, filter 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .photo-card.frame-polaroid .photo-wrapper img {
+            top: 15px;
+            left: 15px;
+            width: calc(100% - 30px);
+            height: calc(100% - 75px);
+        }
+
+        .photo-card.frame-ornate .photo-wrapper img {
+            top: 20px;
+            left: 20px;
+            width: calc(100% - 40px);
+            height: calc(100% - 60px);
+            border-radius: 4px;
+        }
+
+        .photo-card.frame-tape .photo-wrapper img {
+            top: 8px;
+            left: 8px;
+            width: calc(100% - 16px);
+            height: calc(100% - 24px);
+        }
+
+        .photo-card.frame-vintage .photo-wrapper img {
+            top: 25px;
+            left: 25px;
+            width: calc(100% - 50px);
+            height: calc(100% - 75px);
+            border-radius: 2px;
+            filter: sepia(0.1);
+        }
+
+        .photo-card:hover .photo-wrapper img {
+            transform: scale(1.05);
+            filter: brightness(1.05);
+        }
+
+        .photo-card.frame-vintage:hover .photo-wrapper img {
+            filter: sepia(0.1) brightness(1.05);
+        }
+
+        /* Handwritten caption style for Polaroids */
+        .photo-card.frame-polaroid .photo-caption {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--charcoal);
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            text-shadow: none;
+            opacity: 0.7;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 90%;
+            z-index: 5;
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(58, 58, 58, 0.85), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+            border-radius: 2px;
+        }
+
+        /* Adjust overlay position for Polaroid frames */
+        .photo-card.frame-polaroid .photo-overlay {
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 60px;
+        }
+
+        /* Adjust overlay position for Ornate frames */
+        .photo-card.frame-ornate .photo-overlay {
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 40px;
+            border-radius: 4px;
+        }
+
+        /* Adjust overlay position for Tape frames */
+        .photo-card.frame-tape .photo-overlay {
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 16px;
+        }
+
+        /* Adjust overlay position for Vintage frames */
+        .photo-card.frame-vintage .photo-overlay {
+            top: 25px;
+            left: 25px;
+            right: 25px;
+            bottom: 50px;
+            border-radius: 2px;
+        }
+
+        .photo-card:hover .photo-overlay {
+            opacity: 1;
+        }
+
+        .photo-caption {
+            color: white;
+            font-size: 1.3rem;
+            font-style: italic;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            transform: translateY(15px);
+            transition: transform 0.4s ease;
+            line-height: 1.4;
+        }
+
+        .photo-card:hover .photo-caption {
+            transform: translateY(0);
+        }
+
+        /* Placeholder styling */
+        .photo-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 80%;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--deep-rose);
+            margin-bottom: 15px;
+            opacity: 0.6;
+        }
+
+        .placeholder-text {
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            opacity: 0.5;
+            font-style: italic;
+        }
+
+        /* Message Section */
+        .message-section {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 50px 40px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            text-align: center;
+            animation: fadeInUp 1s ease-out 1.2s both;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .message-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--deep-rose);
+            margin-bottom: 25px;
+        }
+
+        .message-section p {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            color: var(--charcoal);
+            opacity: 0.85;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            opacity: 0.6;
+            font-style: italic;
+        }
+
+        /* Modal for full-size images */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 10px;
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 3rem;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        /* Instructions Panel */
+        .instructions {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border-left: 5px solid var(--deep-rose);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .instructions h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--deep-rose);
+            margin-bottom: 20px;
+        }
+
+        .instructions ol {
+            margin-left: 25px;
+            line-height: 1.8;
+            font-size: 1.2rem;
+        }
+
+        .instructions li {
+            margin-bottom: 12px;
+        }
+
+        .instructions code {
+            background: var(--blush);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-family: monospace;
+            color: var(--deep-rose);
+        }
+
+        @media (max-width: 1024px) {
+            .photo-card:nth-child(1),
+            .photo-card:nth-child(2),
+            .photo-card:nth-child(3),
+            .photo-card:nth-child(4),
+            .photo-card:nth-child(5),
+            .photo-card:nth-child(6) {
+                grid-column: span 6 !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .photo-card:nth-child(1),
+            .photo-card:nth-child(2),
+            .photo-card:nth-child(3),
+            .photo-card:nth-child(4),
+            .photo-card:nth-child(5),
+            .photo-card:nth-child(6) {
+                grid-column: span 1 !important;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .message-section {
+                padding: 30px 25px;
+            }
+
+            .instructions {
+                padding: 25px 20px;
+            }
+
+            .photo-caption {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts background -->
+    <div id="hearts-container"></div>
+
+    <header>
+        <h1>Kashish Moments</h1>
+        <p class="subtitle">Every picture tells chuhhi ki story ✨</p>
+    </header>
+
+    <!-- <div class="gallery-container">
+        <div class="instructions">
+            <h3>✨ How to Add Your Photos (Super Easy!)</h3>
+            <ol>
+                <li><strong>Upload your photos</strong> to an image hosting service like <a href="https://imgur.com" target="_blank" style="color: var(--deep-rose);">Imgur</a>, Google Photos, or Dropbox and get the direct image URLs</li>
+                <li><strong>Copy this HTML structure</strong> for each photo you want to add:</li>
+            </ol>
+            <pre style="background: var(--blush); padding: 20px; border-radius: 10px; overflow-x: auto; margin: 20px 0; font-size: 0.95rem;"><code>&lt;div class="photo-card" data-caption="Your caption here"&gt;
+    &lt;div class="photo-wrapper"&gt;
+        &lt;img src="YOUR_IMAGE_URL_HERE" alt="Memory"&gt;
+    &lt;/div&gt;
+    &lt;div class="photo-overlay"&gt;
+        &lt;p class="photo-caption"&gt;Your caption here&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            <ol start="3">
+                <li><strong>Paste it</strong> into the gallery section (look for the <code>&lt;!-- ADD YOUR PHOTOS HERE --&gt;</code> comment)</li>
+                <li><strong>Replace</strong> <code>YOUR_IMAGE_URL_HERE</code> with your actual image URL</li>
+                <li><strong>Change</strong> the caption text to your personal message</li>
+                <li><strong>Repeat</strong> for as many photos as you want - they'll automatically get beautiful varied frames!</li>
+            </ol>
+            <p style="margin-top: 20px; padding: 15px; background: rgba(255, 255, 255, 0.6); border-radius: 8px; border-left: 4px solid var(--deep-rose);">
+                <strong>✨ Magic:</strong> The website automatically rotates through 4 different frame styles (Polaroid, Ornate, Tape, and Vintage) so each photo looks unique! Just keep adding photos and they'll look beautiful automatically.
+            </p>
+        </div> -->
+
+        <div class="gallery-grid">
+            <!-- ============================================ -->
+            <!-- ADD YOUR PHOTOS HERE -->
+            <!-- Just copy-paste the structure below for each photo! -->
+            <!-- The website will automatically assign beautiful frames -->
+            <!-- ============================================ -->
+
+            <div class="photo-card" data-caption="A moment I'll never forget">
+                <div class="photo-wrapper">
+                    <img src="images/0BC9558E-6E8C-4387-86F1-A4B5DA1E3E7D.JPG" alt="Memory 1">
+                </div>
+                <div class="photo-overlay">
+                    <p class="photo-caption">A never forget moment</p>
+                </div>
+            </div>
+
+            <div class="photo-card" data-caption="Your beautiful smile lights up my world">
+                <div class="photo-wrapper">
+                    <img src="images/50CAC171-0418-4C02-B272-E611107609F2.JPG" alt="Memory 2">
+                </div>
+                <div class="photo-overlay">
+                    <p class="photo-caption">smile</p>
+                </div>
+            </div>
+
+            <div class="photo-card" data-caption="Together is my favorite place to be">
+                <div class="photo-wrapper">
+                    <img src="images/81C83BDD-589B-4136-AB25-136DB8C48C20.JPG" alt="Memory 3">
+                </div>
+                <div class="photo-overlay">
+                    <p class="photo-caption">Me</p>
+                </div>
+            </div>
+
+            <div class="photo-card" data-caption="Every day with you is a new adventure">
+                <div class="photo-wrapper">
+                    <img src="images/01335C87-4650-4D52-98AD-3DE220D39F0E.JPG" alt="Memory 4">
+                </div>
+                <div class="photo-overlay">
+                    <p class="photo-caption">New</p>
+                </div>
+            </div>
+
+            <div class="photo-card" data-caption="Making memories with you is my favorite thing">
+                <div class="photo-wrapper">
+                    <img src="images/D658D371-C2F3-44E8-AC28-366B6AB71498.JPG" alt="Memory 5">
+                </div>
+                <div class="photo-overlay">
+                    <p class="photo-caption">Making memories.</p>
+                </div>
+            </div>
+
+            <div class="photo-card" data-caption="You make everything more beautiful">
+                <div class="photo-wrapper">
+                    <img src="images/DC20C212-D544-4733-A6C6-AA5FE07516D5.JPG" alt="Memory 6">
+                </div>
+                <div class="photo-overlay">
+                    <p class="photo-caption">Beautiful</p>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- COPY THE STRUCTURE ABOVE TO ADD MORE PHOTOS! -->
+            <!-- Example:
+            <div class="photo-card" data-caption="Your custom caption">
+                <div class="photo-wrapper">
+                    <img src="YOUR_IMAGE_URL" alt="Memory">
+                </div>
+                <div class="photo-overlay">
+                    <p class="photo-caption">Your custom caption</p>
+                </div>
+            </div>
+            -->
+            <!-- ============================================ -->
+        </div>
+
+        <div class="message-section">
+            <h2>Ms Chudail (Pehddi)</h2>
+            <p>
+                This gallery is a small token of all the beautiful memories you've created. 
+            </p>
+            <p style="margin-top: 20px; font-size: 1.2rem;">
+                <em> . .... ...</em>
+            </p>
+        </div>
+    </div>
+
+    <!-- <footer>
+        Made with love, just for you 💕
+    </footer> -->
+
+    <!-- Modal for viewing full-size images -->
+    <div class="modal" id="imageModal">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImage" alt="Full size image">
+    </div>
+
+    <script>
+        // Frame styles that will be rotated through
+        const frameStyles = ['frame-polaroid', 'frame-ornate', 'frame-tape', 'frame-vintage'];
+
+        // Dynamically assign frame styles to all photo cards
+        function assignFrameStyles() {
+            const photoCards = document.querySelectorAll('.photo-card');
+            photoCards.forEach((card, index) => {
+                // Rotate through frame styles
+                const frameClass = frameStyles[index % frameStyles.length];
+                card.classList.add(frameClass);
+            });
+        }
+
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const hearts = ['💕', '💖', '💗', '💝', '❤️', '💓'];
+            
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-bg';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (15 + Math.random() * 15) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const photoCards = document.querySelectorAll('.photo-card');
+
+        photoCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const img = this.querySelector('img');
+                if (img && img.src && !img.src.includes('placeholder')) {
+                    modal.classList.add('active');
+                    modalImg.src = img.src;
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on click outside image
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Initialize everything
+        window.addEventListener('DOMContentLoaded', function() {
+            assignFrameStyles();
+            createHearts();
+        });
+    </script>
+</body>
+</html>
